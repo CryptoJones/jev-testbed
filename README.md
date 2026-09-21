@@ -37,7 +37,6 @@ EPUB-over-PDF preference, thresholds); Jev supplies only the semantic call.
 | `src/openlibrary.mjs` | Open Library search client — throttled, disk-cached candidate lists |
 | `wanted/ya-500.md` | The 500-YA-novel test list |
 | `results/ya-500.jsonl` | Per-book picks and every per-candidate Jev probability from the 500 run |
-| `blog/` | Write-up of the experiment |
 
 ## Run it
 
@@ -64,6 +63,8 @@ Jev fixes both baseline failures — the companion-volume slip and the
 missing-author rejection — with no regressions on the sanity cases.
 
 ## Real-world test — 500 YA novels (2026-09-20)
+
+Write-up: [Jev vs. the Regex Tower](https://cryptojones.dev/jev-vs-the-regex-tower/) on cryptojones.dev.
 
 `real-test.mjs` runs both selectors over `wanted/ya-500.md` using real candidate
 lists from Open Library's search API (metadata only — nothing is downloaded),
