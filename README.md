@@ -84,6 +84,10 @@ discordant pairs:  jev right 20, baseline right 3   (McNemar exact p ≈ 0.0005)
 - **Baseline wins (3):** *Four* (Jev scored the right record 0.38, under the 0.6
   threshold), and two where Jev's top score went to a Spanish-edition record by
   0.02 — a tie-break policy gap in `jev-select.mjs`, not a judgment error.
+  **Fixed since:** within the tie band, English records now beat foreign-looking
+  ones. `node real-test.mjs --replay` re-applies the policy to the stored
+  probabilities (no API calls): exactly those two picks change → Jev 499/500
+  (in-sample, so the as-run 497 stays the headline).
 - 34 of the 43 "different picks" are duplicate catalogue records of the same
   book — both right. 6 of the 10 "both nothing" got zero search results because
   the query builder turns `Tyrant's` into `Tyrant s`.

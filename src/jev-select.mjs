@@ -72,17 +72,37 @@ export async function jevSelect(client, item, candidates, opts = {}) {
     companion: res.answers[`companion_${i}`].noul
   }));
 
+  return { chosen: choose(judgments, { matchThreshold, companionThreshold }), judgments, usage: res.usage };
+}
+
+// A foreign-language edition IS the same work, so Jev rightly scores it as high
+// as the English one — a 0.02 edge must not let it win. These catch editions
+// whose catalogue language field is blank or wrong.
+const FOREIGN_EDITION_RE = /\b(spanish|french|german|italian|portuguese|dutch|russian|chinese|japanese)\s+(edition|translation)\b|\bedici[oó]n\b|\b(en|em)\s+espa[nñ]ol\b/i;
+// "Monstruo viene a verme / A Monster Calls" — a bilingual record title.
+const BILINGUAL_TITLE_RE = /\s\/\s/;
+
+export const looksForeign = (c) =>
+  (!!c.language && !c.language.includes('english')) ||
+  FOREIGN_EDITION_RE.test(c.title || '') ||
+  BILINGUAL_TITLE_RE.test(c.title || '');
+
+/**
+ * The policy half, kept pure so stored judgments can be replayed without the
+ * API. Within the tie band the scores are indistinguishable, so exact rules
+ * decide: English before foreign-looking, EPUB before PDF, then best score.
+ */
+export function choose(judgments, opts = {}) {
+  const { matchThreshold = MATCH_THRESHOLD, companionThreshold = COMPANION_THRESHOLD } = opts;
+
   const eligible = judgments
     .filter((j) => j.match >= matchThreshold && j.companion < companionThreshold)
     .sort((a, b) => b.match - a.match);
+  if (!eligible.length) return null;
 
-  let chosen = null;
-  if (eligible.length) {
-    const best = eligible[0].match;
-    const tie = eligible.filter((j) => j.match >= best - TIE_BAND);
-    chosen =
-      tie.find((j) => j.ext === 'epub') || tie.find((j) => j.ext === 'pdf') || eligible[0];
-  }
+  const best = eligible[0].match;
+  const tie = eligible.filter((j) => j.match >= best - TIE_BAND);
+  const pool = tie.some((j) => !looksForeign(j)) ? tie.filter((j) => !looksForeign(j)) : tie;
 
-  return { chosen, judgments, usage: res.usage };
+  return pool.find((j) => j.ext === 'epub') || pool.find((j) => j.ext === 'pdf') || pool[0];
 }

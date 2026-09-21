@@ -12,13 +12,15 @@
  *   node real-test.mjs --limit 25         # first 25 items only
  *   node real-test.mjs --baseline-only    # no Jev API calls
  *   node real-test.mjs --report           # summarize the results file, run nothing
+ *   node real-test.mjs --replay           # re-apply the current selection policy to the
+ *                                         # stored Jev probabilities (no API calls), then report
  *   node real-test.mjs --list wanted/x.md --out results/x.jsonl
  */
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { baselineSelect, getSearchQuery } from './src/baseline-select.mjs';
-import { jevSelect, makeClient } from './src/jev-select.mjs';
+import { jevSelect, makeClient, choose } from './src/jev-select.mjs';
 import { searchCandidates } from './src/openlibrary.mjs';
 import { filterEnglish } from '../LibraryRetriever/lib/zlib-common.mjs';
 
@@ -132,6 +134,23 @@ function report(rows) {
 
 async function main() {
   if (flag('--report')) return report(readResults().filter((r) => !r.searchError));
+  if (flag('--replay')) {
+    const rows = readResults().filter((r) => !r.searchError && r.judgments);
+    let changed = 0;
+    for (const r of rows) {
+      const now = slim(choose(r.judgments));
+      if ((now && now.id) !== (r.jev && r.jev.id)) {
+        changed++;
+        console.log(`changed: ${r.wanted.title}
+    was: ${r.jev ? r.jev.title : '∅'}
+    now: ${now ? now.title : '∅'}`);
+      }
+      r.jev = now;
+    }
+    console.log(`
+${changed} pick(s) changed by the current policy`);
+    return report(rows);
+  }
 
   const items = parseWanted(listFile).slice(0, limit);
   const done = new Set(readResults().filter((r) => !r.jevError && !r.searchError).map((r) => `${r.wanted.title}|${r.wanted.author}`));

@@ -126,6 +126,11 @@ It's not a clean sweep, and the losses are instructive:
   *are* the same work, which is what I asked. It's a hole in **my** tie-break
   policy, which only knew how to prefer file formats. The fix is a few lines of
   code, not a prompt tweak — which is exactly the division of labour I wanted.
+  (I've since made it: within a tie, English records beat foreign-looking ones.
+  Because every probability is stored, I could replay all 500 decisions without
+  a single API call — exactly those two picks changed, putting Jev at 499/500.
+  That number is in-sample, since I wrote the rule after seeing the misses, so
+  the headline stays at the as-run 497.)
 
 One more bug surfaced that belongs to neither selector: six searches returned
 zero results because the query builder turns `Tyrant's` into `Tyrant s`.
