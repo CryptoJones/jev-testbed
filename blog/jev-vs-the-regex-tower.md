@@ -153,3 +153,8 @@ that nobody has independently double-checked. The harness, the list, and every
 candidate with its probabilities are in the
 [repo](https://github.com/CryptoJones/jev-testbed) (`results/ya-500.jsonl`) if
 you want to check my work.
+
+## Thanks
+
+A big thank-you to the team at [TypeSafe](https://typesafe.io) for giving me
+early access to Jev. None of this experiment would exist without it.
