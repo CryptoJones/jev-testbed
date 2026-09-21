@@ -1,0 +1,17 @@
+{
+  "name": "jev-testbed",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Offline harness comparing Jev (TypeSafe System One) candidate selection against LibraryRetriever's heuristic scorer.",
+  "scripts": {
+    "compare": "node compare.mjs",
+    "baseline": "node compare.mjs --baseline-only"
+  },
+  "dependencies": {
+    "@typesafe-ai/sdk": "^0.6.0"
+  },
+  "devDependencies": {
+    "playwright": "^1.63.0"
+  }
+}

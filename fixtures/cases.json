@@ -1,0 +1,70 @@
+[
+  {
+    "name": "clean-exact",
+    "why": "Sanity: the requested book is present with a subtitle. Both should pick it.",
+    "wanted": { "title": "Clean Code", "author": "Robert C. Martin", "meta": "" },
+    "candidates": [
+      { "title": "Clean Code: A Handbook of Agile Software Craftsmanship", "author": "Robert C. Martin", "year": "2008", "ext": "epub", "size": "8 MB", "language": "english", "publisher": "Prentice Hall", "download": "/dl/1001/aaaa" }
+    ],
+    "expect": { "titleIncludes": "Clean Code", "ext": "epub" }
+  },
+  {
+    "name": "epub-preference",
+    "why": "Sanity: same book as PDF and EPUB. EPUB is preferred.",
+    "wanted": { "title": "The Pragmatic Programmer", "author": "Andrew Hunt, David Thomas", "meta": "" },
+    "candidates": [
+      { "title": "The Pragmatic Programmer: Your Journey to Mastery", "author": "Andrew Hunt, David Thomas", "year": "2019", "ext": "pdf", "size": "12 MB", "language": "english", "publisher": "Addison-Wesley", "download": "/dl/1002/bbbb" },
+      { "title": "The Pragmatic Programmer: Your Journey to Mastery", "author": "Andrew Hunt, David Thomas", "year": "2019", "ext": "epub", "size": "6 MB", "language": "english", "publisher": "Addison-Wesley", "download": "/dl/1002/cccc" }
+    ],
+    "expect": { "titleIncludes": "Pragmatic Programmer", "ext": "epub" }
+  },
+  {
+    "name": "companion-slips-regex",
+    "why": "BASELINE FAILURE: a '...Solutions' companion isn't caught by COMPANION_RE, embeds the title, and is EPUB, so the heuristic's EPUB preference picks the solutions book over the real (PDF) textbook.",
+    "wanted": { "title": "Introduction to Electrodynamics", "author": "David J. Griffiths", "meta": "" },
+    "candidates": [
+      { "title": "Introduction to Electrodynamics", "author": "David J. Griffiths", "year": "2017", "ext": "pdf", "size": "28 MB", "language": "english", "publisher": "Cambridge University Press", "download": "/dl/1003/dddd" },
+      { "title": "Introduction to Electrodynamics Solutions", "author": "David J. Griffiths", "year": "2018", "ext": "epub", "size": "3 MB", "language": "english", "publisher": "Cambridge University Press", "download": "/dl/1003/eeee" }
+    ],
+    "expect": { "titleIncludes": "Introduction to Electrodynamics", "titleExcludes": "Solutions", "ext": "pdf" }
+  },
+  {
+    "name": "missing-author-metadata",
+    "why": "BASELINE FAILURE: the correct book's author field is blank in the catalogue, so the mandatory author gate rejects it and the run finds nothing. Jev can still recognise the work from its title + publisher + year.",
+    "wanted": { "title": "Deep Learning", "author": "Ian Goodfellow, Yoshua Bengio, Aaron Courville", "meta": "2016, MIT Press" },
+    "candidates": [
+      { "title": "Deep Learning", "author": "", "year": "2016", "ext": "epub", "size": "19 MB", "language": "english", "publisher": "MIT Press", "download": "/dl/1004/ffff" },
+      { "title": "Deep Learning with Python", "author": "Francois Chollet", "year": "2021", "ext": "epub", "size": "14 MB", "language": "english", "publisher": "Manning", "download": "/dl/1004/gggg" }
+    ],
+    "expect": { "titleIncludes": "Deep Learning", "titleExcludes": "Python", "ext": "epub" }
+  },
+  {
+    "name": "wrong-edition-still-matches",
+    "why": "Sanity: requested 2nd edition, only a 3rd edition (extra co-author) is available. A different edition is the same work.",
+    "wanted": { "title": "The Rust Programming Language, 2nd Edition", "author": "Steve Klabnik, Carol Nichols", "meta": "" },
+    "candidates": [
+      { "title": "The Rust Programming Language", "author": "Steve Klabnik, Carol Nichols, Chris Krycho", "year": "2023", "ext": "epub", "size": "5 MB", "language": "english", "publisher": "No Starch Press", "download": "/dl/1005/hhhh" }
+    ],
+    "expect": { "titleIncludes": "Rust Programming Language", "ext": "epub" }
+  },
+  {
+    "name": "language-filter",
+    "why": "Sanity: an English and a Spanish edition of the same book. English is preferred even though the Spanish one is EPUB.",
+    "wanted": { "title": "Thinking, Fast and Slow", "author": "Daniel Kahneman", "meta": "" },
+    "candidates": [
+      { "title": "Thinking, Fast and Slow", "author": "Daniel Kahneman", "year": "2011", "ext": "epub", "size": "4 MB", "language": "spanish", "publisher": "Debate", "download": "/dl/1006/iiii" },
+      { "title": "Thinking, Fast and Slow", "author": "Daniel Kahneman", "year": "2011", "ext": "pdf", "size": "7 MB", "language": "english", "publisher": "Farrar, Straus and Giroux", "download": "/dl/1006/jjjj" }
+    ],
+    "expect": { "titleIncludes": "Thinking, Fast and Slow", "ext": "pdf" }
+  },
+  {
+    "name": "no-match",
+    "why": "Sanity: the requested book is absent; only unrelated titles are returned. Both should choose nothing.",
+    "wanted": { "title": "Quantum Gastronomy for Left-Handed Wombats", "author": "A. Nonymous", "meta": "" },
+    "candidates": [
+      { "title": "Cooking for Geeks", "author": "Jeff Potter", "year": "2015", "ext": "epub", "size": "20 MB", "language": "english", "publisher": "O'Reilly", "download": "/dl/1007/kkkk" },
+      { "title": "The Physics of Everyday Things", "author": "James Kakalios", "year": "2017", "ext": "pdf", "size": "9 MB", "language": "english", "publisher": "Crown", "download": "/dl/1007/llll" }
+    ],
+    "expect": null
+  }
+]
